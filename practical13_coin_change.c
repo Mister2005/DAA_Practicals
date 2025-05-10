@@ -2,76 +2,134 @@
 #include <conio.h>
 #define MAX 100
 
-int min(int a, int b) { 
-    return (a < b) ? a : b; 
+// Function to swap two integers
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
-void printCoins(int table[], int coins[], int m, int V) {
-    printf("\nCoins used: ");
-    int value = V;
-    while(value > 0) {
-        for(int j = 0; j < m; j++) {
-            if(value >= coins[j] && table[value] == table[value - coins[j]] + 1) {
-                printf("%d ", coins[j]);
-                value -= coins[j];
-                break;
+// Function to sort coins in descending order
+void sortCoinsDescending(int coins[], int m) {
+    for(int i = 0; i < m-1; i++) {
+        for(int j = 0; j < m-i-1; j++) {
+            if(coins[j] < coins[j+1]) {
+                swap(&coins[j], &coins[j+1]);
             }
         }
     }
-    printf("\n");
 }
 
-void printTable(int table[], int V) {
+// Function to track and print coins used in Dynamic Programming
+void printCoinsDP(int dp[][2], int target, int m) {
+    printf("\nCoins used to make %d: ", target);
+    int remainingAmount = target;
+    int totalCoins = 0;
+    
+    while(remainingAmount > 0) {
+        printf("%d ", dp[remainingAmount][1]);
+        remainingAmount = remainingAmount - dp[remainingAmount][1];
+        totalCoins++;
+    }
+    printf("\nTotal coins needed: %d\n", totalCoins);
+}
+
+void printTable(int dp[][2], int V) {
     printf("\nDynamic Programming Table:\n");
     printf("Amount: ");
     for(int i = 0; i <= V; i++) {
         printf("%4d ", i);
     }
-    printf("\nCoins : ");
+    printf("\nMin Coins: ");
     for(int i = 0; i <= V; i++) {
-        if(table[i] == 9999)
+        if(dp[i][0] == MAX)
             printf(" INF ");
         else
-            printf("%4d ", table[i]);
+            printf("%4d ", dp[i][0]);
     }
     printf("\n");
 }
 
-int coinChange(int coins[], int m, int V) {
-    int table[MAX];
-    int i, j;
+// Dynamic Programming approach
+void coinChangeDP(int coins[], int m, int V) {
+    int dp[MAX][2];  // dp[i][0] stores min coins, dp[i][1] stores last coin used
     
-    // Initialize table with maximum value
-    for (i = 0; i <= V; i++) 
-        table[i] = 9999;
+    // Initialize dp table
+    for(int i = 0; i <= V; i++) {
+        dp[i][0] = MAX;  // Number of coins
+        dp[i][1] = 0;    // Coin used
+    }
     
     // Base case
-    table[0] = 0;
+    dp[0][0] = 0;
     
-    // Fill the table in bottom-up manner
-    for (i = 1; i <= V; i++) {
-        for (j = 0; j < m; j++) {
-            if (coins[j] <= i) {
-                int sub_res = table[i-coins[j]];
-                if (sub_res != 9999 && sub_res + 1 < table[i])
-                    table[i] = sub_res + 1;
+    // Fill the dp table
+    for(int i = 1; i <= V; i++) {
+        for(int j = 0; j < m; j++) {
+            if(coins[j] <= i) {
+                int sub_res = dp[i - coins[j]][0];
+                if(sub_res != MAX && sub_res + 1 < dp[i][0]) {
+                    dp[i][0] = sub_res + 1;
+                    dp[i][1] = coins[j];  // Store the coin used
+                }
             }
         }
     }
     
     // Print the DP table
-    printTable(table, V);
+    printTable(dp, V);
     
     // If solution exists, print the coins used
-    if(table[V] != 9999) {
-        printCoins(table, coins, m, V);
+    if(dp[V][0] != MAX) {
+        printCoinsDP(dp, V, m);
+    } else {
+        printf("\nNo solution exists using Dynamic Programming approach!\n");
+    }
+}
+
+// Greedy approach
+void coinChangeGreedy(int coins[], int m, int V) {
+    // Sort coins in descending order
+    sortCoinsDescending(coins, m);
+    
+    printf("\nGreedy Approach Solution:");
+    printf("\n------------------------");
+    
+    int remainingAmount = V;
+    int totalCoins = 0;
+    int coinsUsed[MAX] = {0};  // To store count of each coin used
+    
+    // Try to use the largest possible coins first
+    for(int i = 0; i < m && remainingAmount > 0; i++) {
+        while(remainingAmount >= coins[i]) {
+            remainingAmount -= coins[i];
+            coinsUsed[i]++;
+            totalCoins++;
+        }
     }
     
-    return table[V];
+    if(remainingAmount == 0) {
+        printf("\nCoins used: ");
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < coinsUsed[i]; j++) {
+                printf("%d ", coins[i]);
+            }
+        }
+        printf("\nBreakdown of coins used:");
+        for(int i = 0; i < m; i++) {
+            if(coinsUsed[i] > 0) {
+                printf("\nCoin %d: used %d time(s)", coins[i], coinsUsed[i]);
+            }
+        }
+        printf("\nTotal number of coins needed: %d\n", totalCoins);
+    } else {
+        printf("\nNo solution exists using Greedy approach!\n");
+    }
 }
 
 void main() {
     int coins[MAX], m, V;
+    int choice;
     
     printf("Coin Change Problem Solver\n");
     printf("-------------------------\n\n");
@@ -113,12 +171,32 @@ void main() {
     }
     printf("\nTarget amount: %d\n", V);
     
-    int result = coinChange(coins, m, V);
+    // Method selection
+    printf("\nSelect the method to solve:");
+    printf("\n1. Dynamic Programming approach");
+    printf("\n2. Greedy approach");
+    printf("\nEnter your choice (1/2): ");
+    scanf("%d", &choice);
     
-    if(result == 9999)
-        printf("\nIt's not possible to make the amount %d with given coins\n", V);
-    else
-        printf("\nMinimum coins required: %d\n", result);
+    switch(choice) {
+        case 1: {
+            printf("\nUsing Dynamic Programming Approach:");
+            printf("\n--------------------------------");
+            coinChangeDP(coins, m, V);
+            break;
+        }
+        case 2: {
+            printf("\nUsing Greedy Approach:");
+            printf("\n---------------------");
+            int tempCoins[MAX];
+            // Make a copy of coins array as it will be sorted for greedy approach
+            for(int i = 0; i < m; i++) tempCoins[i] = coins[i];
+            coinChangeGreedy(tempCoins, m, V);
+            break;
+        }
+        default:
+            printf("\nInvalid choice!\n");
+    }
     
     printf("\nPress any key to exit...");
     getch();
