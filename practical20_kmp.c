@@ -1,52 +1,90 @@
 #include <stdio.h>
-#include <conio.h>
+#include <stdlib.h>
 #include <string.h>
-#define MAX 1000
 
-void computeLPS(char pat[], int M, int lps[]) {
-    int len = 0, i = 1;
+void computeLPSArray(char* pattern, int M, int* lps) {
+    int len = 0;
     lps[0] = 0;
+    int i = 1;
+
     while (i < M) {
-        if (pat[i] == pat[len]) {
+        if (pattern[i] == pattern[len]) {
             len++;
             lps[i] = len;
             i++;
         } else {
-            if (len != 0) len = lps[len-1];
-            else { lps[i] = 0; i++; }
+            if (len != 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
 }
 
-void KMPSearch(char pat[], char txt[]) {
-    int M = strlen(pat), N = strlen(txt);
-    int lps[MAX], i = 0, j = 0;
+void KMPSearch(char* pattern, char* text) {
+    int M = strlen(pattern);
+    int N = strlen(text);
+    int* lps = (int*)malloc(M * sizeof(int));
+    int i = 0;
+    int j = 0;
     int found = 0;
-    computeLPS(pat, M, lps);
+
+    computeLPSArray(pattern, M, lps);
+
+    printf("\nLPS Table:\n");
+    printf("Index:  ");
+    for (i = 0; i < M; i++) {
+        printf("%2d ", i);
+    }
+    printf("\nPattern: ");
+    for (i = 0; i < M; i++) {
+        printf("%2c ", pattern[i]);
+    }
+    printf("\nLPS:    ");
+    for (i = 0; i < M; i++) {
+        printf("%2d ", lps[i]);
+    }
+    printf("\n\n");
+
+    i = 0;
+    j = 0;
     while (i < N) {
-        if (pat[j] == txt[i]) { i++; j++; }
+        if (pattern[j] == text[i]) {
+            j++;
+            i++;
+        }
+
         if (j == M) {
-            printf("Found pattern at index %d\n", i - j);
+            printf("Pattern found at index %d\n", i - j);
             found = 1;
-            j = lps[j-1];
-        } else if (i < N && pat[j] != txt[i]) {
-            if (j != 0) j = lps[j-1];
-            else i++;
+            j = lps[j - 1];
+        } else if (i < N && pattern[j] != text[i]) {
+            if (j != 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
         }
     }
+
     if (!found) {
         printf("Pattern not found in the text\n");
     }
+
+    free(lps);
 }
 
-void main() {
-    char txt[MAX], pat[MAX];
-    printf("Enter the main text: ");
-    scanf("%s", txt);
+int main() {
+    char text[1000], pattern[100];
+
+    printf("Enter the text string: ");
+    scanf("%s", text);
     printf("Enter the pattern to search: ");
-    scanf("%s", pat);
-    
-    printf("\nText: %s\n", txt);
-    printf("Pattern: %s\n\n", pat);
-    KMPSearch(pat, txt);
+    scanf("%s", pattern);
+
+    KMPSearch(pattern, text);
+
+    return 0;
 }

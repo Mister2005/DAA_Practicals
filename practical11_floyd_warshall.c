@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
-#define INF 9999
+#include <limits.h>
+#define INF INT_MAX
 
 void printMatrix(int vertices, int dist[vertices][vertices]) {
     printf("\n+");

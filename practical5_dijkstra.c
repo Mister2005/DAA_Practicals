@@ -1,72 +1,156 @@
 #include <stdio.h>
-#include <conio.h>
-#define V 5
-#define INF 9999
+#include <stdlib.h>
+#include <limits.h>
+#include <stdbool.h>
 
-void displayGraph(int graph[V][V]) {
-    int i, j;
-    printf("\nThe graph you entered (adjacency matrix):\n");
-    printf("   ");
-    for(i = 0; i < V; i++)
-        printf("%3d ", i);
-    printf("\n");
-    printf("   ");
-    for(i = 0; i < V; i++)
-        printf("--- ");
-    printf("\n");
+int minDistanceVertex(int distance[], bool visited[], int V) 
+{
+    int min = INT_MAX, min_index;
     
-    for(i = 0; i < V; i++) {
-        printf("%d |", i);
-        for(j = 0; j < V; j++) {
-            printf("%3d ", graph[i][j]);
+    for (int v = 0; v < V; v++) 
+    {
+        if (visited[v] == false && distance[v] <= min) 
+        {
+            min = distance[v];
+            min_index = v;
         }
-        printf("\n");
     }
-    printf("\n");
+    
+    return min_index;
 }
 
-void dijkstra(int graph[V][V], int src) {
-    int dist[V], visited[V] = {0}, i, count, u, v;
-    for (i = 0; i < V; i++) dist[i] = INF;
-    dist[src] = 0;
-    for (count = 0; count < V-1; count++) {
-        int min = INF, min_index;
-        for (v = 0; v < V; v++)
-            if (!visited[v] && dist[v] <= min) { min = dist[v]; min_index = v; }
-        u = min_index;
-        visited[u] = 1;
-        for (v = 0; v < V; v++)
-            if (!visited[v] && graph[u][v] && dist[u] + graph[u][v] < dist[v])
-                dist[v] = dist[u] + graph[u][v];
-    }
-    printf("Vertex \t Distance from Source\n");
-    for (i = 0; i < V; i++) printf("%d \t\t %d\n", i, dist[i]);
+void printPath(int parent[], int dest, char vertices[]) 
+{
+    if (parent[dest] == -1)
+        return;
+    
+    printPath(parent, parent[dest], vertices);
+    printf(" -> %c", vertices[dest]);
 }
 
-void main() {
-    //clrscr();
-    int graph[V][V];
-    int i, j, source;
+void printResult(int src, int dest, int distance[], int parent[], char vertices[]) 
+{
+    printf("\nShortest Path from %c to %c:\n", vertices[src], vertices[dest]);
+    printf("Path: %c", vertices[src]);
+    printPath(parent, dest, vertices);
+    printf("\nTotal Distance: %d\n", distance[dest]);
+}
+
+void dijkstra(int **graph, int src, int dest, int V, char vertices[]) 
+{
+    int *distance = (int *)malloc(V * sizeof(int));
+    bool *visited = (bool *)malloc(V * sizeof(bool));
+    int *parent = (int *)malloc(V * sizeof(int));
+    for (int i = 0; i < V; i++) 
+    {
+        distance[i] = INT_MAX;
+        visited[i] = false;
+        parent[i] = -1;
+    }
+    distance[src] = 0;
+    for (int count = 0; count < V - 1; count++) 
+    {
+        int u = minDistanceVertex(distance, visited, V);
+        if (u == dest)
+            break;
+        visited[u] = true;
+        
+        for (int v = 0; v < V; v++) 
+        {
+            if (graph[u][v] && !visited[v] && distance[u] != INT_MAX && distance[u] + graph[u][v] < distance[v]) 
+            {
+                distance[v] = distance[u] + graph[u][v];
+                parent[v] = u;
+            }
+        }
+    }
+    printResult(src, dest, distance, parent, vertices);
+    free(distance);
+    free(visited);
+    free(parent);
+}
+
+int main() 
+{
+    int V;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &V);
+    char *vertices = (char *)malloc(V * sizeof(char));
+    printf("Enter the names of vertices (single characters): ");
+    getchar();
+    for (int i = 0; i < V; i++) 
+    {
+        scanf("%c", &vertices[i]);
+        getchar();
+    }
+    int **graph = (int **)malloc(V * sizeof(int *));
+    for (int i = 0; i < V; i++) 
+    {
+        graph[i] = (int *)malloc(V * sizeof(int));
+    }
+    printf("\nEnter the distance matrix (%d x %d):\n", V, V);
+    printf("(Enter 0 for no connection, positive value for distance)\n");
     
-    printf("Enter the adjacency matrix for the graph (%dx%d):\n", V, V);
-    printf("(Enter 0 for no edge, and weight for existing edge)\n");
-    
-    for(i = 0; i < V; i++) {
-        for(j = 0; j < V; j++) {
-            printf("Enter weight for edge from vertex %d to %d: ", i, j);
+    for (int i = 0; i < V; i++) 
+    {
+        printf("Enter distance values for vertex %c: ", vertices[i]);
+        for (int j = 0; j < V; j++) 
+        {
             scanf("%d", &graph[i][j]);
         }
     }
-    
-    displayGraph(graph);
-    
-    printf("\nEnter the source vertex (0 to %d): ", V-1);
-    scanf("%d", &source);
-    
-    if(source >= 0 && source < V) {
-        dijkstra(graph, source);
-    } else {
-        printf("Invalid source vertex! Please enter a vertex between 0 and %d\n", V-1);
+    printf("\nThe distance graph is:\n");
+    printf("  ");
+    for (int i = 0; i < V; i++) 
+    {
+        printf("%c ", vertices[i]);
     }
-    //getch();
+    printf("\n");
+    
+    for (int i = 0; i < V; i++) 
+    {
+        printf("%c ", vertices[i]);
+        for (int j = 0; j < V; j++) 
+        {
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+    int choice = 1;
+    while (choice == 1) 
+    {
+        char srcChar, destChar;
+        int src = -1, dest = -1;
+        printf("\nEnter the source vertex: ");
+        getchar();
+        scanf("%c", &srcChar);
+        
+        printf("Enter the destination vertex: ");
+        getchar();
+        scanf("%c", &destChar);
+        for (int i = 0; i < V; i++) 
+        {
+            if (vertices[i] == srcChar) src = i;
+            if (vertices[i] == destChar) dest = i;
+        }
+        if (src == -1 || dest == -1) 
+        {
+            printf("Invalid source or destination vertex.\n");
+        } 
+        else 
+        {
+            dijkstra(graph, src, dest, V, vertices);
+        }
+        
+        printf("\nDo you want to find another path? (1 for Yes, 0 for No): ");
+        scanf("%d", &choice);
+    }
+    for (int i = 0; i < V; i++) 
+    {
+        free(graph[i]);
+    }
+    free(graph);
+    free(vertices);
+    
+    return 0;
 }
