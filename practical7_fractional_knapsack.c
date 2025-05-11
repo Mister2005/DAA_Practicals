@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <conio.h>
+#define MAX 100
 
-typedef struct { int weight, value; float ratio; } Item;
+typedef struct { 
+    int weight, value; 
+    float ratio; 
+} Item;
 
 void sortItems(Item arr[], int n) {
     int i, j;
@@ -33,11 +37,46 @@ void fractionalKnapsack(Item arr[], int n, int W) {
 }
 
 void main() {
-    //clrscr();
-    Item arr[] = {{10,60,0}, {20,100,0}, {30,120,0}};
-    int n = sizeof(arr)/sizeof(arr[0]), W = 50, i;
-    for (i = 0; i < n; i++)
+    int n, W;
+    Item arr[MAX];
+    
+    printf("Enter number of items (max %d): ", MAX);
+    scanf("%d", &n);
+    
+    if(n <= 0 || n > MAX) {
+        printf("Invalid number of items!\n");
+        return;
+    }
+    
+    printf("\nEnter details for each item:\n");
+    for(int i = 0; i < n; i++) {
+        printf("\nItem %d:\n", i+1);
+        printf("Weight: ");
+        scanf("%d", &arr[i].weight);
+        printf("Value: ");
+        scanf("%d", &arr[i].value);
+        if(arr[i].weight <= 0 || arr[i].value < 0) {
+            printf("Invalid input! Weight must be positive and value non-negative.\n");
+            return;
+        }
         arr[i].ratio = (float)arr[i].value / arr[i].weight;
+    }
+    
+    printf("\nEnter knapsack capacity: ");
+    scanf("%d", &W);
+    
+    if(W <= 0) {
+        printf("Invalid capacity! Must be positive.\n");
+        return;
+    }
+    
+    printf("\nItems entered:");
+    printf("\nItem\tWeight\tValue\tValue/Weight");
+    for(int i = 0; i < n; i++) {
+        printf("\n%d\t%d\t%d\t%.2f", 
+            i+1, arr[i].weight, arr[i].value, arr[i].ratio);
+    }
+    printf("\nKnapsack capacity: %d\n", W);
+    
     fractionalKnapsack(arr, n, W);
-    //getch();
 }

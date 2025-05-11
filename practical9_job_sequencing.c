@@ -2,7 +2,9 @@
 #include <conio.h>
 #define MAX 100
 
-typedef struct { int id, deadline, profit; } Job;
+typedef struct { 
+    int id, deadline, profit; 
+} Job;
 
 int compare(Job a, Job b) {
     return a.profit < b.profit;
@@ -39,9 +41,49 @@ void jobSequencing(Job arr[], int n) {
 }
 
 void main() {
-    //clrscr();
-    Job arr[] = {{1,2,100}, {2,1,19}, {3,2,27}, {4,1,25}, {5,3,15}};
-    int n = sizeof(arr)/sizeof(arr[0]);
+    int n;
+    Job arr[MAX];
+    
+    printf("Enter number of jobs (max %d): ", MAX);
+    scanf("%d", &n);
+    
+    if(n <= 0 || n > MAX) {
+        printf("Invalid number of jobs!\n");
+        return;
+    }
+    
+    printf("\nEnter details for each job:\n");
+    int maxDeadline = 0;
+    
+    for(int i = 0; i < n; i++) {
+        printf("\nJob %d:\n", i+1);
+        arr[i].id = i+1;
+        
+        printf("Deadline: ");
+        scanf("%d", &arr[i].deadline);
+        if(arr[i].deadline <= 0) {
+            printf("Invalid deadline! Must be positive.\n");
+            return;
+        }
+        if(arr[i].deadline > maxDeadline) {
+            maxDeadline = arr[i].deadline;
+        }
+        
+        printf("Profit: ");
+        scanf("%d", &arr[i].profit);
+        if(arr[i].profit < 0) {
+            printf("Invalid profit! Cannot be negative.\n");
+            return;
+        }
+    }
+    
+    printf("\nJobs entered:");
+    printf("\nJob ID\tDeadline\tProfit");
+    for(int i = 0; i < n; i++) {
+        printf("\n%d\t%d\t\t%d", 
+            arr[i].id, arr[i].deadline, arr[i].profit);
+    }
+    printf("\n\nMaximum deadline: %d\n", maxDeadline);
+    
     jobSequencing(arr, n);
-    //getch();
 }
