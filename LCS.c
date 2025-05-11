@@ -3,9 +3,10 @@
 #include <string.h>
 #define MAX 100
 
+// Function to print the dynamic programming table
 void printLCSTable(int L[][MAX+1], char *X, char *Y, int m, int n) {
     printf("\nDynamic Programming Table:\n");
-    printf("    ");
+    printf("   ");
     printf("  ");
     for(int j = 0; j < n; j++)
         printf("%3c ", Y[j]);
@@ -14,6 +15,7 @@ void printLCSTable(int L[][MAX+1], char *X, char *Y, int m, int n) {
         printf("----");
     printf("\n");
     
+    // Print table contents with row headers
     for(int i = 0; i <= m; i++) {
         if(i == 0)
             printf("  |");
@@ -26,18 +28,18 @@ void printLCSTable(int L[][MAX+1], char *X, char *Y, int m, int n) {
     }
 }
 
+// Function to print the Longest Common Subsequence
 void printLCS(int L[][MAX+1], char *X, char *Y, int m, int n) {
     char lcs[MAX];
     int index = L[m][n];
     lcs[index] = '\0';
     
+    // Build LCS string from bottom up
     int i = m, j = n;
     while(i > 0 && j > 0) {
         if(X[i-1] == Y[j-1]) {
             lcs[index-1] = X[i-1];
-            i--;
-            j--;
-            index--;
+            i--; j--; index--;
         }
         else if(L[i-1][j] > L[i][j-1])
             i--;
@@ -46,9 +48,10 @@ void printLCS(int L[][MAX+1], char *X, char *Y, int m, int n) {
     }
     
     printf("\nLongest Common Subsequence: %s\n", lcs);
+    printf("Length of LCS: %d\n", strlen(lcs));
     
     // Print positions where characters match
-    printf("\nMatching positions:\n");
+    printf("\nVisualization of matching characters:\n");
     printf("String 1: ");
     for(i = 0; i < m; i++) {
         int found = 0;
@@ -59,7 +62,7 @@ void printLCS(int L[][MAX+1], char *X, char *Y, int m, int n) {
             }
         }
         if(found)
-            printf("\033[32m%c\033[0m ", X[i]);  // Green color for matching
+            printf("[%c] ", X[i]);  // Highlight matching characters
         else
             printf("%c ", X[i]);
     }
@@ -74,13 +77,14 @@ void printLCS(int L[][MAX+1], char *X, char *Y, int m, int n) {
             }
         }
         if(found)
-            printf("\033[32m%c\033[0m ", Y[j]);  // Green color for matching
+            printf("[%c] ", Y[j]);  // Highlight matching characters
         else
             printf("%c ", Y[j]);
     }
     printf("\n");
 }
 
+// Function to find the Longest Common Subsequence
 int lcs(char *X, char *Y, int m, int n) {
     int L[MAX+1][MAX+1];
     int i, j;
@@ -100,17 +104,18 @@ int lcs(char *X, char *Y, int m, int n) {
     // Print the DP table
     printLCSTable(L, X, Y, m, n);
     
-    // Print the LCS
+    // Print the LCS and highlighted matches
     printLCS(L, X, Y, m, n);
     
     return L[m][n];
 }
 
 void main() {
+    //clrscr();  // Clear screen for Turbo C
     char X[MAX], Y[MAX];
     
     printf("Longest Common Subsequence (LCS) Finder\n");
-    printf("--------------------------------------\n\n");
+    printf("------------------------------------\n\n");
     
     printf("Enter first string: ");
     scanf("%s", X);
@@ -121,8 +126,10 @@ void main() {
     int m = strlen(X);
     int n = strlen(Y);
     
+    // Input validation
     if(m > MAX || n > MAX) {
         printf("String length exceeds maximum limit of %d\n", MAX);
+        //getch();
         return;
     }
     
@@ -130,9 +137,10 @@ void main() {
     printf("\nString 1: %s (length: %d)", X, m);
     printf("\nString 2: %s (length: %d)\n", Y, n);
     
+    // Find and display LCS
     int length = lcs(X, Y, m, n);
     printf("\nLength of Longest Common Subsequence = %d\n", length);
     
     printf("\nPress any key to exit...");
-    getch();
+    //getch();  // Wait for key press in Turbo C
 }
