@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
-#define MOD 13    // A prime number for hash calculation
-#define MAX 1000  // Maximum string length
+#define MOD 13
+#define MAX 1000
 
-// Function to calculate power of 10
 int power(int exponent) {
     int result = 1;
     for(int i = 0; i < exponent; i++) {
@@ -13,16 +12,14 @@ int power(int exponent) {
     return result;
 }
 
-// Function to implement Rabin-Karp string matching algorithm
 void rabinKarp(char pat[], char txt[]) {
-    int M = strlen(pat);  // Length of pattern
-    int N = strlen(txt);  // Length of text
+    int M = strlen(pat);
+    int N = strlen(txt);
     int i, j;
-    int p = 0;    // Hash value for pattern
-    int t = 0;    // Hash value for current text window
-    int found = 0; // Flag to track if pattern was found
+    int p = 0;
+    int t = 0;
+    int found = 0;
     
-    // Calculate initial hash values for pattern and first text window
     for (i = 0; i < M; i++) {
         p = (p + (pat[i] * power(M - 1 - i))) % MOD;
         t = (t + (txt[i] * power(M - 1 - i))) % MOD;
@@ -32,9 +29,7 @@ void rabinKarp(char pat[], char txt[]) {
     printf("------------------------------------------------\n");
     printf("Pattern hash value: %d\n\n", p);
     
-    // Slide pattern over text one by one
     for (i = 0; i <= N-M; i++) {
-        // If hash values match, check characters one by one
         if (p == t) {
             printf("Hash match found at index %d, verifying characters...\n", i);
             for (j = 0; j < M; j++) {
@@ -51,11 +46,8 @@ void rabinKarp(char pat[], char txt[]) {
             }
         }
         
-        // Calculate hash value for next window using rolling hash
         if (i < N-M) {
-            // Remove first character of current window
             t = 0;
-            // Calculate new hash for next window
             for(j = 0; j < M; j++) {
                 t = (t + (txt[i + 1 + j] * power(M - 1 - j))) % MOD;
             }
@@ -68,8 +60,8 @@ void rabinKarp(char pat[], char txt[]) {
     }
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
+    //clrscr();
     char txt[MAX], pat[MAX];
     
     printf("Rabin-Karp String Matching Algorithm\n");
@@ -81,19 +73,18 @@ void main() {
     printf("Enter the pattern to search: ");
     scanf("%s", pat);
     
-    // Input validation
     if(strlen(pat) > strlen(txt)) {
         printf("\nError: Pattern length cannot be greater than text length!\n");
         //getch();
-        return;
+        return 1;
     }
     
     printf("\nText: %s (length: %d)\n", txt, strlen(txt));
     printf("Pattern: %s (length: %d)\n", pat, strlen(pat));
     
-    // Perform Rabin-Karp search
     rabinKarp(pat, txt);
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
+    return 0;
 }

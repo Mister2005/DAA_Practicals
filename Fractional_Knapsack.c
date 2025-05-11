@@ -2,14 +2,12 @@
 #include <conio.h>
 #define MAX 100
 
-// Structure to represent an item
 struct Item { 
-    int weight;    // Weight of the item
-    int value;     // Value of the item
-    float ratio;   // Value per unit weight
+    int weight;
+    int value;
+    float ratio;
 };
 
-// Function to sort items by value/weight ratio
 void sortItems(struct Item arr[], int n) {
     int i, j;
     struct Item temp;
@@ -22,27 +20,22 @@ void sortItems(struct Item arr[], int n) {
             }
 }
 
-// Function to solve fractional knapsack problem
 void fractionalKnapsack(struct Item arr[], int n, int W) {
-    // Sort items by value/weight ratio
     sortItems(arr, n);
     
-    float used = 0.0;    // Current weight used
-    float profit = 0.0;  // Total profit
+    float used = 0.0;
+    float profit = 0.0;
     
     printf("\nSolution Steps:\n");
     printf("-------------\n");
     
-    // Process each item in sorted order
     for (int i = 0; i < n; i++) {
         if (used + arr[i].weight <= W) {
-            // Take whole item
             used += arr[i].weight;
             profit += arr[i].value;
             printf("Take 100%% of item with value/weight ratio = %.2f\n", arr[i].ratio);
             printf("Added weight: %d, Added value: %d\n", arr[i].weight, arr[i].value);
         } else {
-            // Take fraction of item
             float remain = W - used;
             profit += arr[i].ratio * remain;
             printf("Take %.2f%% of item with value/weight ratio = %.2f\n", 
@@ -59,8 +52,8 @@ void fractionalKnapsack(struct Item arr[], int n, int W) {
     printf("Total weight used = %.2f\n", used);
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
+    //clrscr();
     int n, W;
     struct Item arr[MAX];
     
@@ -73,7 +66,7 @@ void main() {
     if(n <= 0 || n > MAX) {
         printf("Invalid number of items!\n");
         //getch();
-        return;
+        return 1;
     }
     
     printf("\nEnter details for each item:\n");
@@ -87,7 +80,7 @@ void main() {
         if(arr[i].weight <= 0 || arr[i].value < 0) {
             printf("Invalid input! Weight must be positive and value non-negative.\n");
             //getch();
-            return;
+            return 1;
         }
         
         arr[i].ratio = (float)arr[i].value / arr[i].weight;
@@ -99,7 +92,7 @@ void main() {
     if(W <= 0) {
         printf("Invalid capacity! Must be positive.\n");
         //getch();
-        return;
+        return 1;
     }
     
     printf("\nInput Summary:");
@@ -114,5 +107,6 @@ void main() {
     fractionalKnapsack(arr, n, W);
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
+    return 0;
 }

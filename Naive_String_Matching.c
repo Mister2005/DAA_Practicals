@@ -3,25 +3,21 @@
 #include <string.h>
 #define MAX 1000
 
-// Function to implement naive string matching algorithm
 void naiveSearch(char txt[], char pat[]) {
-    int M = strlen(pat);  // Length of pattern
-    int N = strlen(txt);  // Length of text
+    int M = strlen(pat);
+    int N = strlen(txt);
     int i, j;
-    int found = 0;       // Flag to track if pattern was found
+    int found = 0;
     
     printf("\nSearching for pattern...\n");
     printf("-------------------\n");
     
-    // Loop through all possible starting positions
     for (i = 0; i <= N-M; i++) {
-        // Try to match pattern starting at position i
         for (j = 0; j < M; j++) {
             if (txt[i+j] != pat[j]) 
-                break;  // Mismatch found, break inner loop
+                break;
         }
         
-        // If inner loop completed (j == M), we found a match
         if (j == M) {
             printf("Pattern found at index %d\n", i);
             printf("Text window: ...%.*s[%.*s]%.*s...\n",
@@ -37,35 +33,31 @@ void naiveSearch(char txt[], char pat[]) {
     }
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
+    //clrscr();
     char txt[MAX], pat[MAX];
     
     printf("Naive String Matching Algorithm\n");
     printf("-----------------------------\n\n");
     
-    // Get input text
     printf("Enter the main text: ");
     scanf("%s", txt);
     
-    // Get pattern to search
     printf("Enter the pattern to search: ");
     scanf("%s", pat);
     
-    // Input validation
     if(strlen(pat) > strlen(txt)) {
         printf("\nError: Pattern length cannot be greater than text length!\n");
         //getch();
-        return;
+        return 1;
     }
     
-    // Display inputs
     printf("\nText: %s (length: %d)\n", txt, strlen(txt));
     printf("Pattern: %s (length: %d)\n", pat, strlen(pat));
     
-    // Perform search
     naiveSearch(txt, pat);
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
+    return 0;
 }

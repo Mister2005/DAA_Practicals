@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <conio.h>
 
-// Structure to represent an activity
 struct Activity {
-    int start;   // Start time of activity
-    int finish;  // Finish time of activity
-    int id;      // Activity identifier
+    int start;
+    int finish;
+    int id;
 };
 
-// Function to sort activities by finish time
 void sortActivities(struct Activity arr[], int n) {
     int i, j;
     struct Activity temp;
@@ -21,7 +19,6 @@ void sortActivities(struct Activity arr[], int n) {
             }
 }
 
-// Function to display all activities
 void displayActivities(struct Activity arr[], int n) {
     printf("\nAll activities:\n");
     printf("Activity\tStart Time\tFinish Time\n");
@@ -31,25 +28,18 @@ void displayActivities(struct Activity arr[], int n) {
     }
 }
 
-// Function to select maximum number of activities
 void activitySelection(struct Activity arr[], int n) {
-    // Sort activities by finish time
     sortActivities(arr, n);
     
     printf("\nSelected activities (sorted by finish time):\n");
     printf("Activity\tStart Time\tFinish Time\n");
     printf("----------------------------------------\n");
     
-    // First activity is always selected
     int count = 1;
     int last_finish = arr[0].finish;
     printf("%d\t%d\t\t%d\n", arr[0].id, arr[0].start, arr[0].finish);
     
-    // Consider rest of the activities
     for (int i = 1; i < n; i++) {
-        // If this activity has start time greater than
-        // or equal to the finish time of previously
-        // selected activity, then select it
         if (arr[i].start >= last_finish) {
             printf("%d\t%d\t\t%d\n", arr[i].id, arr[i].start, arr[i].finish);
             last_finish = arr[i].finish;
@@ -60,29 +50,27 @@ void activitySelection(struct Activity arr[], int n) {
     printf("\nTotal activities selected: %d\n", count);
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
+    //clrscr();
     int n;
-    struct Activity arr[100];  // Maximum 100 activities
+    struct Activity arr[100];
     
     printf("Activity Selection Problem Solver\n");
     printf("------------------------------\n\n");
     
-    // Get number of activities
     printf("Enter the number of activities (max 100): ");
     scanf("%d", &n);
     
     if(n <= 0 || n > 100) {
         printf("Invalid number of activities!\n");
         //getch();
-        return;
+        return 1;
     }
     
-    // Input activity details
     printf("\nEnter the start and finish time for each activity:\n");
     for(int i = 0; i < n; i++) {
         printf("\nActivity %d:\n", i+1);
-        arr[i].id = i+1;  // Assign activity ID
+        arr[i].id = i+1;
         
         printf("Start time: ");
         scanf("%d", &arr[i].start);
@@ -90,7 +78,6 @@ void main() {
         printf("Finish time: ");
         scanf("%d", &arr[i].finish);
         
-        // Validate input
         while(arr[i].finish <= arr[i].start) {
             printf("Error: Finish time must be greater than start time!\n");
             printf("Enter finish time again: ");
@@ -98,13 +85,12 @@ void main() {
         }
     }
     
-    // Display all activities
     displayActivities(arr, n);
     
-    // Find and display optimal selection
     printf("\nFinding optimal selection of activities...\n");
     activitySelection(arr, n);
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
+    return 0;
 }

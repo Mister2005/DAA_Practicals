@@ -1,12 +1,9 @@
-/* Practical: Modification of Quick Sort to Count Swaps */
 #include <stdio.h>
 #include <conio.h>
 #define MAX 100
 
-// Global variable to track number of swaps
 int swapCount = 0;
 
-// Function to swap two elements and count the swap
 void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -15,12 +12,9 @@ void swap(int *a, int *b) {
     printf("Swap performed: %d <-> %d (Total swaps: %d)\n", *a, *b, swapCount);
 }
 
-// Modified Quick Sort function that counts swaps
 void quickModified(int a[], int low, int high) {
-    // If array contains at least 2 elements
     if (low < high) {
         int i = low, j = high;
-        // Choose middle element as pivot
         int pivot = a[(low + high)/2];
         
         printf("\nPartitioning array around pivot %d\n", pivot);
@@ -28,28 +22,25 @@ void quickModified(int a[], int low, int high) {
         for(int k = low; k <= high; k++)
             printf("%d ", a[k]);
         printf("\n");
-        
-        // Partition array around pivot
+
         while (i <= j) {
             while (a[i] < pivot) i++;
             while (a[j] > pivot) j--;
             
             if (i <= j) {
-                if(i != j) {  // Only swap if elements are different
+                if(i != j) {
                     swap(&a[i], &a[j]);
                 }
                 i++;
                 j--;
             }
         }
-        
-        // Print array after partition
+
         printf("After partition: ");
         for(int k = low; k <= high; k++)
             printf("%d ", a[k]);
         printf("\n");
         
-        // Recursively sort sub-arrays
         if (low < j) {
             printf("\nProcessing left sub-array...\n");
             quickModified(a, low, j);
@@ -62,7 +53,7 @@ void quickModified(int a[], int low, int high) {
 }
 
 void main() {
-    //clrscr();  // Clear screen for Turbo C
+    //clrscr();
     int n, i;
     int arr[MAX];
     
@@ -88,11 +79,9 @@ void main() {
     for(i = 0; i < n; i++) 
         printf("%d ", arr[i]);
     printf("\n\nStarting Quick Sort...\n");
-    
-    // Reset swap counter
+
     swapCount = 0;
     
-    // Sort array and count swaps
     quickModified(arr, 0, n-1);
     
     printf("\nFinal Results:\n");
@@ -103,5 +92,5 @@ void main() {
     printf("\nTotal number of swaps performed: %d\n", swapCount);
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
 }

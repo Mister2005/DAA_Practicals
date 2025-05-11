@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <conio.h>
 
-// Function to return maximum of two numbers
 int max(int a, int b) { 
     return (a > b) ? a : b; 
 }
 
-// Function to show the solution construction process
 void showSolutionSteps(int K[][51], int n, int W) {
     printf("\nSolution Construction Process:\n");
     printf("---------------------------\n");
@@ -21,12 +19,10 @@ void showSolutionSteps(int K[][51], int n, int W) {
     }
 }
 
-// Function to solve 0-1 Knapsack problem
 int knapSack(int W, int wt[], int val[], int n) {
-    int K[n+1][51];  // DP table (max weight assumed 50)
+    int K[n+1][51];
     int i, w;
     
-    // Build table K[][] in bottom-up manner
     for (i = 0; i <= n; i++) {
         for (w = 0; w <= W; w++) {
             if (i == 0 || w == 0)
@@ -38,10 +34,8 @@ int knapSack(int W, int wt[], int val[], int n) {
         }
     }
     
-    // Show solution construction process
     showSolutionSteps(K, n, W);
     
-    // Print selected items
     printf("\nSelected items for optimal solution:\n");
     printf("-------------\n");
     w = W;
@@ -59,26 +53,22 @@ int knapSack(int W, int wt[], int val[], int n) {
     return K[n][W];
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
     int n, W;
     
     printf("0/1 Knapsack Problem Solver\n");
     printf("-------------------------\n\n");
     
-    // Get number of items
     printf("Enter the number of items: ");
     scanf("%d", &n);
     
     if(n <= 0) {
         printf("Invalid number of items!\n");
-        //getch();
-        return;
+        return 1;
     }
     
-    int wt[n], val[n];  // Arrays for weights and values
+    int wt[n], val[n];
     
-    // Input item details
     printf("\nEnter the details for each item:\n");
     for(int i = 0; i < n; i++) {
         printf("\nItem %d:\n", i+1);
@@ -87,25 +77,20 @@ void main() {
         printf("Value: ");
         scanf("%d", &val[i]);
         
-        // Validate input
         if(wt[i] <= 0 || val[i] < 0) {
             printf("Invalid input! Weight must be positive and value non-negative.\n");
-            //getch();
-            return;
+            return 1;
         }
     }
     
-    // Get knapsack capacity
     printf("\nEnter knapsack capacity (max 50): ");
     scanf("%d", &W);
     
     if(W <= 0 || W > 50) {
         printf("\nError: Capacity should be between 1 and 50\n");
-        //getch();
-        return;
+        return 1;
     }
     
-    // Print problem details
     printf("\nKnapsack Details:\n");
     printf("----------------\n");
     printf("Capacity: %d\n", W);
@@ -118,10 +103,9 @@ void main() {
                i+1, wt[i], val[i], (float)val[i]/wt[i]);
     }
     
-    // Solve knapsack problem
     int max_value = knapSack(W, wt, val, n);
     printf("\nMaximum value that can be obtained: %d\n", max_value);
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    return 0;
 }

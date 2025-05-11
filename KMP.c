@@ -4,15 +4,13 @@
 #include <conio.h>
 #define MAX 1000
 
-// Function to compute the Longest Proper Prefix which is also Suffix (LPS) array
 void computeLPSArray(char* pattern, int M, int* lps) {
-    int len = 0;  // Length of the previous longest prefix & suffix
+    int len = 0;
     int i;
     
-    lps[0] = 0;  // First element is always 0
+    lps[0] = 0;
     i = 1;
     
-    // Calculate lps[i] for i = 1 to M-1
     while (i < M) {
         if (pattern[i] == pattern[len]) {
             len++;
@@ -21,11 +19,9 @@ void computeLPSArray(char* pattern, int M, int* lps) {
         }
         else {
             if (len != 0) {
-                // Try to find a shorter prefix which is also a suffix
                 len = lps[len - 1];
             }
             else {
-                // No prefix found
                 lps[i] = 0;
                 i++;
             }
@@ -33,30 +29,32 @@ void computeLPSArray(char* pattern, int M, int* lps) {
     }
 }
 
-// Function to implement KMP string matching algorithm
 void KMPSearch(char* pattern, char* text) {
     int M = strlen(pattern);
     int N = strlen(text);
     int* lps = (int*)malloc(M * sizeof(int));
-    int i = 0;  // Index for text
-    int j = 0;  // Index for pattern
-    int found = 0;  // Flag to track if pattern was found
+    int i = 0;
+    int j = 0;
+    int found = 0;
 
-    // Compute the LPS array
     computeLPSArray(pattern, M, lps);
 
-    // Print the LPS Table for understanding
     printf("\nLongest Prefix Suffix (LPS) Table:\n");
     printf("Index:  ");
-    for (i = 0; i < M; i++) printf("%2d ", i);
+    for (i = 0; i < M; i++) {
+        printf("%2d ", i);
+    }
     printf("\nPattern: ");
-    for (i = 0; i < M; i++) printf("%2c ", pattern[i]);
+    for (i = 0; i < M; i++) {
+        printf("%2c ", pattern[i]);
+    }
     printf("\nLPS:    ");
-    for (i = 0; i < M; i++) printf("%2d ", lps[i]);
+    for (i = 0; i < M; i++) {
+        printf("%2d ", lps[i]);
+    }
     printf("\n\nSearching for pattern...\n");
     printf("----------------------\n");
 
-    // Search for pattern in text
     i = 0;
     j = 0;
     while (i < N) {
@@ -91,8 +89,8 @@ void KMPSearch(char* pattern, char* text) {
     free(lps);
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
+    //clrscr();
     char text[MAX], pattern[MAX];
 
     printf("KMP (Knuth-Morris-Pratt) String Matching Algorithm\n");
@@ -103,20 +101,18 @@ void main() {
     printf("Enter the pattern to search: ");
     scanf("%s", pattern);
 
-    // Input validation
     if(strlen(pattern) > strlen(text)) {
         printf("\nError: Pattern length cannot be greater than text length!\n");
         //getch();
-        return;
+        return 1;
     }
 
-    // Display inputs
     printf("\nText: %s (length: %d)\n", text, strlen(text));
     printf("Pattern: %s (length: %d)\n", pattern, strlen(pattern));
 
-    // Perform KMP search
     KMPSearch(pattern, text);
 
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
+    return 0;
 }

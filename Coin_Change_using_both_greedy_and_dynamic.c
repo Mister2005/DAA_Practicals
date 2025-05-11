@@ -2,14 +2,12 @@
 #include <conio.h>
 #define MAX 100
 
-// Function to swap two integers
 void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-// Function to sort coins in descending order for greedy approach
 void sortCoinsDescending(int coins[], int m) {
     for(int i = 0; i < m-1; i++) {
         for(int j = 0; j < m-i-1; j++) {
@@ -20,13 +18,12 @@ void sortCoinsDescending(int coins[], int m) {
     }
 }
 
-// Function to track and print coins used in Dynamic Programming
 void printCoinsDP(int dp[][2], int target, int m) {
     printf("\nCoins used to make %d:\n", target);
     printf("---------------------\n");
     int remainingAmount = target;
     int totalCoins = 0;
-    int coinCount[MAX] = {0};  // To store count of each coin
+    int coinCount[MAX] = {0};
     
     while(remainingAmount > 0) {
         int coin = dp[remainingAmount][1];
@@ -35,7 +32,6 @@ void printCoinsDP(int dp[][2], int target, int m) {
         totalCoins++;
     }
     
-    // Print coin usage breakdown
     for(int i = 0; i < MAX; i++) {
         if(coinCount[i] > 0) {
             printf("Coin %d used %d time(s)\n", i, coinCount[i]);
@@ -44,7 +40,6 @@ void printCoinsDP(int dp[][2], int target, int m) {
     printf("\nTotal coins needed: %d\n", totalCoins);
 }
 
-// Function to print Dynamic Programming table
 void printTable(int dp[][2], int V) {
     printf("\nDynamic Programming Table:\n");
     printf("Amount: ");
@@ -61,20 +56,16 @@ void printTable(int dp[][2], int V) {
     printf("\n");
 }
 
-// Dynamic Programming approach for coin change
 void coinChangeDP(int coins[], int m, int V) {
-    int dp[MAX][2];  // dp[i][0] stores min coins, dp[i][1] stores last coin used
+    int dp[MAX][2];
     
-    // Initialize dp table
     for(int i = 0; i <= V; i++) {
-        dp[i][0] = MAX;  // Number of coins
-        dp[i][1] = 0;    // Coin used
+        dp[i][0] = MAX;
+        dp[i][1] = 0;
     }
     
-    // Base case
     dp[0][0] = 0;
     
-    // Fill dp table
     printf("\nBuilding solution using Dynamic Programming...\n");
     for(int i = 1; i <= V; i++) {
         for(int j = 0; j < m; j++) {
@@ -90,7 +81,6 @@ void coinChangeDP(int coins[], int m, int V) {
         }
     }
     
-    // Print results
     printTable(dp, V);
     
     if(dp[V][0] != MAX) {
@@ -100,9 +90,7 @@ void coinChangeDP(int coins[], int m, int V) {
     }
 }
 
-// Greedy approach for coin change
 void coinChangeGreedy(int coins[], int m, int V) {
-    // Sort coins in descending order
     sortCoinsDescending(coins, m);
     
     printf("\nGreedy Approach Solution:\n");
@@ -110,10 +98,9 @@ void coinChangeGreedy(int coins[], int m, int V) {
     
     int remainingAmount = V;
     int totalCoins = 0;
-    int coinsUsed[MAX] = {0};  // Count of each coin used
+    int coinsUsed[MAX] = {0};
     
     printf("Process:\n");
-    // Try to use largest possible coins first
     for(int i = 0; i < m && remainingAmount > 0; i++) {
         if(coins[i] <= remainingAmount) {
             int count = remainingAmount / coins[i];
@@ -138,8 +125,8 @@ void coinChangeGreedy(int coins[], int m, int V) {
     }
 }
 
-void main() {
-    //clrscr();  // Clear screen for Turbo C
+int main() {
+    //clrscr();
     int coins[MAX], m, V;
     int choice;
     
@@ -152,7 +139,7 @@ void main() {
     if(m <= 0 || m > MAX) {
         printf("Invalid number of coins!\n");
         //getch();
-        return;
+        return 1;
     }
     
     printf("\nEnter the value of each coin:\n");
@@ -162,7 +149,7 @@ void main() {
         if(coins[i] <= 0) {
             printf("Invalid coin value! Must be positive.\n");
             //getch();
-            return;
+            return 1;
         }
     }
     
@@ -172,7 +159,7 @@ void main() {
     if(V <= 0 || V > MAX) {
         printf("Invalid target amount!\n");
         //getch();
-        return;
+        return 1;
     }
     
     printf("\nProblem Details:\n");
@@ -197,7 +184,6 @@ void main() {
         case 2:
             printf("\nSolving using Greedy approach...\n");
             int tempCoins[MAX];
-            // Make a copy as original array will be sorted
             for(int i = 0; i < m; i++) 
                 tempCoins[i] = coins[i];
             coinChangeGreedy(tempCoins, m, V);
@@ -207,5 +193,6 @@ void main() {
     }
     
     printf("\nPress any key to exit...");
-    //getch();  // Wait for key press in Turbo C
+    //getch();
+    return 0;
 }

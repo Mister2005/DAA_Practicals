@@ -36,9 +36,8 @@ void floydWarshall(int vertices, int dist[vertices][vertices]) {
     }
 }
 
-void main() {
+int main() {
     int vertices;
-    //clrscr();
 
     printf("Floyd Warshall Algorithm - All Pairs Shortest Path\n");
     printf("------------------------------------------------\n\n");
@@ -67,5 +66,5 @@ void main() {
     printMatrix(vertices, dist);
     
     printf("\nPress any key to exit...");
-    //getch();
+    return 0;
 }
