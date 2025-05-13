@@ -1,75 +1,57 @@
 #include <stdio.h>
-#include <conio.h>
+#define MAX 100
 
-struct MinMax { 
-    int min, max; 
-};
-
-struct MinMax getMinMax(int arr[], int low, int high) {
-    struct MinMax mm, mml, mmr;
-    int mid;
-    
-    if (low == high) { 
-        mm.min = mm.max = arr[low]; 
-        return mm; 
+// Use pointers to return both min and max
+void min_max(int arr[], int low, int high, int *min, int *max) {
+    // Base case: Only one element
+    if (low == high) {
+        *min = arr[low];
+        *max = arr[low];
+        return;
     }
     
-    if (high == low + 1) {
-        if (arr[low] < arr[high]) { 
-            mm.min = arr[low]; 
-            mm.max = arr[high]; 
+    // Base case: Only two elements
+    if (low + 1 == high) {
+        if (arr[low] < arr[high]) {
+            *min = arr[low];
+            *max = arr[high];
+        } else {
+            *min = arr[high];
+            *max = arr[low];
         }
-        else { 
-            mm.min = arr[high]; 
-            mm.max = arr[low]; 
-        }
-        return mm;
+        return;
     }
     
-    mid = (low + high) / 2;
-    mml = getMinMax(arr, low, mid);
-    mmr = getMinMax(arr, mid + 1, high);
+    // Divide: Find midpoint
+    int mid = (low + high) / 2;
     
-    mm.min = (mml.min < mmr.min) ? mml.min : mmr.min;
-    mm.max = (mml.max > mmr.max) ? mml.max : mmr.max;
-    return mm;
+    // Variables to store results from recursive calls
+    int left_min, left_max, right_min, right_max;
+    
+    // Conquer: Recursively find min and max in both halves
+    min_max(arr, low, mid, &left_min, &left_max);
+    min_max(arr, mid + 1, high, &right_min, &right_max);
+    
+    // Combine: Find overall min and max
+    *min = (left_min < right_min) ? left_min : right_min;
+    *max = (left_max > right_max) ? left_max : right_max;
 }
 
 int main() {
-    //clrscr();
-    int n, i;
-    
-    printf("Divide and Conquer: Find Minimum and Maximum\n");
-    printf("-----------------------------------------\n\n");
-    
-    printf("Enter number of elements (max 50): ");
+    int arr[MAX];
+    int n;
+    printf("Enter the number of elements: ");
     scanf("%d", &n);
     
-    if(n <= 0 || n > 50) {
-        printf("Invalid array size! Please enter between 1 and 50.\n");
-        //getch();
-        return 1;
-    }
-    
-    int arr[50];
-    printf("\nEnter %d elements:\n", n);
-    for (i = 0; i < n; i++) {
-        printf("Element %d: ", i+1);
+    printf("Enter the elements:\n");
+    for(int i = 0; i < n; i++) {
+        printf("Element %d: ", i + 1);
         scanf("%d", &arr[i]);
     }
     
-    printf("\nInput array: ");
-    for(i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
+    int min, max;
+    min_max(arr, 0, n-1, &min, &max);
     
-    struct MinMax result = getMinMax(arr, 0, n-1);
-    
-    printf("\n\nResults:\n");
-    printf("Minimum = %d\n", result.min);
-    printf("Maximum = %d\n", result.max);
-    
-    printf("\nPress any key to exit...");
-    //getch();
+    printf("Minimum: %d, Maximum: %d\n", min, max);
     return 0;
 }
