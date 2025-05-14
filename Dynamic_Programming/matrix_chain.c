@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
 #define MAX 100
+#define INF __INT_MAX__
 
 int m[MAX][MAX], s[MAX][MAX];
 void MatrixChainOrder(int p[], int n) {
@@ -10,7 +11,7 @@ void MatrixChainOrder(int p[], int n) {
     for (L = 2; L < n; L++) {
         for (i = 1; i < n - L + 1; i++) {
             j = i + L - 1;
-            m[i][j] = 32767;
+            m[i][j] = INF;
             for (k = i; k <= j - 1; k++) {
                 q = m[i][k] + m[k+1][j] + p[i-1]*p[k]*p[j];
                 if (q < m[i][j]) {

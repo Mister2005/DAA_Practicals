@@ -1,10 +1,10 @@
 #include <stdio.h>
-#define MAXV 20
+#define MAX 20
 
 int V; // number of vertices
 int m; // number of colors
-int graph[MAXV][MAXV];
-int color[MAXV];
+int graph[MAX][MAX];
+int color[MAX];
 
 void printSolution() {
     int i;
