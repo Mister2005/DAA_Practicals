@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define MAX 10
+#define MAX 21
 #define INF 9999
 
 void printLine(int n) {
@@ -28,17 +28,16 @@ int main() {
             if(G[i][j] == 0) cost[i][j] = INF;
             else cost[i][j] = G[i][j];
         }
-    }
-    for(i = 1; i <= n; i++) {
         visited[i] = 0;
     }
+    /*for(i = 1; i <= n; i++) {
+        visited[i] = 0;
+    }*/
     visited[1] = 1;
     count = 1;
     mincost = 0;
-    printf("\nMINIMUM SPANNING TREE EDGES:\n");
-    printLine(40);
+    printf("\nMINIMUM SPANNING TREE EDGES:\n\n");
     printf("Edge\t\tWeight\n");
-    printLine(40);
     while(count < n) {
         int min = INF;
         for(i = 1; i <= n; i++)
@@ -53,9 +52,7 @@ int main() {
         visited[v] = 1;
         count++;
     }
-    printLine(40);
     printf("Total MST Cost: %d\n", mincost);
-    printLine(40);
     //getch();
     return 0;
 }
